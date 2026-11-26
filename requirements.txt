@@ -1,0 +1,14 @@
+# Rescue Rover — Python dependencies
+# On the Raspberry Pi, do NOT pip install this directly. Run ./setup.sh, which
+# creates the venv with --system-site-packages and pins numpy to the system
+# version (required for the apt-installed picamera2).
+#
+# picamera2 is intentionally NOT listed: it must come from apt
+# (sudo apt install python3-picamera2), not pip.
+
+opencv-python-headless>=4.8
+numpy>=1.24
+ultralytics>=8.0        # YOLOv8 (pulls torch, torchvision, pillow)
+pyyaml>=6.0             # firescout/config.yaml
+pyserial>=3.5           # firescout --serial (ESP32 link); optional until Phase 3
+RPi.GPIO>=0.7; platform_machine == "aarch64" or platform_machine == "armv7l"   # buzzer, Pi only

@@ -1,0 +1,55 @@
+# FireScout configuration.
+# Values marked UNCALIBRATED are engineering placeholders. They must be
+# calibrated with the experiments in docs/00_system_design.md before any
+# result is reported.
+
+camera:
+  source: auto          # auto (Pi camera, else webcam 0) | picamera | 0,1,... | path/to/video.mp4
+  width: 640
+  height: 480
+
+models:
+  person: yolov8n.pt            # COCO, class 0 = person
+  hazard: fire_yolov8n.pt       # classes {0: smoke, 1: fire}
+  flame_classifier: fire_vs_light.pt
+  person_imgsz: 320
+  person_conf: 0.35
+  hazard_imgsz: 320
+  hazard_conf: 0.25
+  hazard_every_n_frames: 5      # smoke/fire model is run every N frames to save CPU
+
+tracker:
+  iou_match: 0.3        # min IoU to match a detection to an existing track
+  confirm_hits: 5       # consecutive-ish hits before a track counts as a person
+  max_missed: 15        # frames a track survives without a detection
+
+smoke:
+  # Score = max(obscuration, (1 - w) * obscuration + w * detector_coverage_score), w = detector_weight
+  detector_weight: 0.4
+  ema_alpha: 0.3                 # temporal smoothing of the smoke score
+  low_light_brightness: 0.12     # below this mean brightness, visibility metrics are unreliable
+  auto_calibrate_after_frames: 30  # clear-air reference captured at start-up (rover starts outside, in clear air)
+                                   # -1 disables; until calibrated only the smoke detector can raise severity
+  levels:                        # UNCALIBRATED thresholds on the 0..1 smoke score
+    moderate: 0.20
+    high: 0.40
+    critical: 0.60
+
+risk:
+  temp_c: {start: 40, full: 100}   # UNCALIBRATED: linear 0..1 between these
+  # CO sub-score breakpoints [ppm, score]. Reference points:
+  # NIOSH REL 35 ppm, OSHA PEL 50 ppm (8 h TWA), NIOSH ceiling 200 ppm, NIOSH IDLH 1200 ppm.
+  co_ppm: [[0, 0.0], [35, 0.25], [50, 0.4], [200, 0.7], [1200, 1.0]]
+  gas_lel_pct: {start: 5, full: 25}  # combustible gas as % of LEL, if a calibrated sensor is fitted
+  smoke_level_score: {LOW: 0.0, MODERATE: 0.35, HIGH: 0.65, CRITICAL: 0.9}
+  flame_score: 0.9
+  hazard_levels: {elevated: 0.25, high: 0.5, critical: 0.75}
+
+server:
+  host: 0.0.0.0
+  port: 8080
+  jpeg_quality: 75
+  stream_fps: 15
+
+mission:
+  data_dir: missions
