@@ -27,6 +27,22 @@ FireScout is an experimental Raspberry Pi prototype for exploring fire and smoke
 - Optional ESP32 or other serial-connected sensor board
 - Optional buzzer for local fire alerts
 
+## Rover hardware
+
+The following images show the assembled rover prototype and the covered-top enclosure concept.
+
+### Prototype electronics
+
+![Four-wheel rescue rover prototype with exposed electronics on its chassis](assets/rescue-rover-prototype.png)
+
+*The four-wheel rover during electronics integration and camera and sensor testing.*
+
+### Covered top enclosure concept
+
+![Covered-top rover enclosure concept with raised camera and sensor mounts](assets/rescue-rover-covered-enclosure.png)
+
+*Concept rendering of the rover's protective top enclosure, with raised mounts for the camera and sensors.*
+
 ## Setup on Raspberry Pi
 
 The setup script targets 64-bit Raspberry Pi OS and installs the camera dependencies from the system packages:
